@@ -1,36 +1,25 @@
 //create(insert), read(find), update(update), delete opterations
-const assert = require('assert').strict;
 
-exports.insertDocument = (db, document, collection, callCallAtEndOfEachMethod) => {
+exports.insertDocument = (db, document, collection) => {
  const coll = db.collection(collection);//access/ interact with collection
- coll.insertOne(document, (err, result) => {
-  assert.strictEqual(err, null);
-  callCallAtEndOfEachMethod(result);//defined somewhere else in code-deliver result to callback, which is programmed to take care of results
- });
+ return coll.insertOne(document);//return promise for insertOne(document) - Node Driver will return promise if no callback is passed in
 };
 
 //list ALL documents
-exports.findDocuments = (db, collection, callCallAtEndOfEachMethod) => {
+exports.findDocuments = (db, collection) => {
  const coll = db.collection(collection);//coll can now be used to interact with collection
- coll.find().toArray((err, docs) => {
-  assert.strictEqual(err, null);
-  callCallAtEndOfEachMethod(docs);
- });//find all, put all found into Array
+ return coll.find().toArray();//node driver returns promise if no callback passed into toArray
 };
 
-exports.removeDocument = (db, document, collection, callCallAtEndOfEachMethod) => {
+exports.removeDocument = (db, document, collection) => {
  const coll = db.collection(collection);//coll can now be used to interact with collection
- coll.deleteOne(document, (err, result) => {
-  assert.strictEqual(err, null);
-  callCallAtEndOfEachMethod(result);
- });
+ return coll.deleteOne(document);//return a promise that node driver defaults to if no callback into method
 };
 
 //update a document
-exports.updateDocument = (db, document, update, collection, callCallAtEndOfEachMethod) => {
+exports.updateDocument = (db, document, update, collection) => {
  const coll = db.collection(collection);//coll can now be used to interact with collection
- coll.updateOne(document, { $set: update }, null, (err, result) => {
-  assert.strictEqual(err, null);
-  callCallAtEndOfEachMethod(result);
- });//1.{infoAboutUpdateObj} 2.{set: {UPDATE OBJECT}} 3.optional configs=null, 4. callback
+ return coll.updateOne(document, { $set: update }, null);//1.{infoAboutUpdateObj} 2.{set: {UPDATE OBJECT}} 3.optional configs=null
+ //no callback specified, return keyword will return the promise from node driver api on methods without callbacks
+
 };//takes in UPDATE object
